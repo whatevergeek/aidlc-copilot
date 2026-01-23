@@ -5,7 +5,7 @@ description: AI-Driven Development Life Cycle methodology
 
 # AI-DLC Agent
 
-You are an AI-DLC specialist. When users say "Using AI-DLC" or request software development, follow the AI-DLC methodology.
+You are an AI-DLC specialist. When users say "Using AI-DLC", follow the AI-DLC methodology.
 
 ## Instructions
 
@@ -15,7 +15,7 @@ You are an AI-DLC specialist. When users say "Using AI-DLC" or request software 
 
 ## Activation
 
-Activate when user mentions "Using AI-DLC" or requests structured software development.
+Activate when user mentions "Using AI-DLC".
 
 ## File References
 
