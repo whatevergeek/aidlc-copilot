@@ -11,7 +11,7 @@ C) Both email/password and social login
 D) Enterprise SSO integration
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A) Simple email/password registration. We store basic user profiles with name, email, and encripted password on our database.
 
 **Q1.2**: Will there be different user roles or permissions?
 A) Single user type - everyone has same permissions
@@ -20,7 +20,7 @@ C) Multiple roles: Admin, Organizer, Coordinator, Guest
 D) Custom role-based permissions system
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A) Single user type - everyone has same permissions
 
 ## 2. Event Management Features
 
@@ -31,7 +31,7 @@ C) Both personal and corporate events
 D) Specialized events (weddings, fundraisers, etc.)
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: X) Other - Community Events (local meetups, workshops, social gatherings)
 
 **Q2.2**: What event information needs to be captured?
 A) Basic info (name, date, time, location)
@@ -40,7 +40,7 @@ C) Comprehensive (all above + custom fields, attachments, recurring events)
 D) Enterprise level (approval workflows, compliance tracking)
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: Basic info (name, date, time, location) and event description. Refer to meetup.com for inspiration.
 
 ## 3. Guest Management & RSVP System
 
@@ -51,7 +51,7 @@ C) Shareable event links for self-registration
 D) All of the above options
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: C) Shareable event links for self-registration
 
 **Q3.2**: What RSVP options should be available?
 A) Simple Yes/No responses
@@ -60,7 +60,7 @@ C) Yes/No/Maybe with meal preferences, dietary restrictions
 D) Fully customizable RSVP forms per event
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A) Simple Yes/No responses
 
 ## 4. Task Management
 
@@ -71,7 +71,7 @@ C) Full project management (dependencies, milestones, Gantt charts)
 D) Integration with external task management tools
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: B) Task assignment to team members with status tracking
 
 **Q4.2**: Who can create and assign tasks?
 A) Only event organizers
@@ -80,7 +80,7 @@ C) Any team member can create tasks
 D) Role-based task permissions
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: B) Organizers and designated coordinators
 
 ## 5. Budget Management
 
@@ -91,7 +91,7 @@ C) Multi-currency support and vendor management
 D) Full financial reporting with profit/loss analysis
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A) Simple expense tracking with categories
 
 **Q5.2**: How should budget permissions work?
 A) Only organizers can view/edit budgets
@@ -100,7 +100,7 @@ C) Role-based budget permissions (some can approve expenses)
 D) Full financial approval workflows
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A) Only organizers can view/edit budgets
 
 ## 6. Dashboard & Visualizations
 
@@ -111,7 +111,7 @@ C) Comprehensive analytics with charts and graphs
 D) Customizable dashboard widgets per user
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: B) Timeline view of upcoming events and deadlines
 
 **Q6.2**: What types of visualizations are most important?
 A) Basic charts (pie, bar, line charts)
@@ -120,7 +120,7 @@ C) Interactive data grids and tables
 D) Advanced analytics (trends, forecasting, heat maps)
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: B) Timeline/Gantt charts for event planning
 
 ## 7. Technical Requirements
 
@@ -131,7 +131,7 @@ C) Desktop application (Windows/Mac)
 D) All platforms (web, mobile, desktop)
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: Web application only (desktop browsers)
 
 **Q7.2**: Do you have any technology preferences?
 A) No preference - choose best technology for the job
@@ -140,7 +140,7 @@ C) Prefer specific backend technology (Node.js, Python, Java)
 D) Must integrate with existing systems
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: Java 21 backend with React/Typescript frontend
 
 ## 8. Integration & Data
 
@@ -151,7 +151,7 @@ C) Email services and communication tools
 D) Payment processing and vendor management systems
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A) No external integrations required
 
 **Q8.2**: What are your data storage and backup requirements?
 A) Standard cloud storage with regular backups
@@ -160,7 +160,7 @@ C) Specific compliance requirements (GDPR, HIPAA, etc.)
 D) High availability and disaster recovery needed
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: not applicable
 
 ## 9. Performance & Scale
 
@@ -171,7 +171,7 @@ C) Large organization (500+ users)
 D) Multi-tenant SaaS platform (thousands of users)
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: B) Medium organization (50-200 users)
 
 **Q9.2**: What are your performance expectations?
 A) Standard web application performance
@@ -180,19 +180,19 @@ C) Real-time updates and notifications
 D) High-performance analytics and reporting
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]: 
+[Answer]: A) Standard web application performance
 
 ## 10. Additional Features
 
 **Q10.1**: Are there any other specific features you need?
 Please describe any additional functionality not covered above:
 
-[Answer]: 
+[Answer]: I might be able to run backend service and frontend service separately on my local machine. They should be on different folders.
 
 **Q10.2**: What is the primary goal or success criteria for this application?
 Please describe what would make this project successful:
 
-[Answer]: 
+[Answer]: The application should be easy to set up and run locally, with clear separation between backend and frontend services. 
 
 ---
 
