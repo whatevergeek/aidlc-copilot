@@ -2,14 +2,6 @@
 
 A complete event planning system built with Java Spring Boot backend and React TypeScript frontend.
 
-## 📚 Documentation
-
-- **[Local Setup Guide](local-setup.md)** - VS Code development setup
-- **[User Guide](user-guide.md)** - How to use the application
-- **[Admin Guide](admin-guide.md)** - System administration
-- **[Developer Guide](dev-guide.md)** - Development and maintenance
-- **[DevOps Guide](devops-guide.md)** - Deployment and operations
-
 ## Features
 
 ✅ **User Authentication** - Register and login with JWT tokens  
@@ -19,6 +11,14 @@ A complete event planning system built with Java Spring Boot backend and React T
 ✅ **Task Management** - Create and assign tasks with status tracking  
 ✅ **Budget Tracking** - Add expenses and monitor event budgets  
 ✅ **Dashboard** - Timeline view of events and key metrics  
+
+## Architecture
+
+- **Backend**: Java 21 Spring Boot REST API
+- **Frontend**: React 18 with TypeScript
+- **Database**: MongoDB
+- **Authentication**: JWT tokens
+- **Communication**: REST API with JSON
 
 ## Quick Start
 
@@ -48,14 +48,6 @@ Frontend runs on: `http://localhost:3000`
 3. Create your first event
 4. Share the event link with guests
 5. Manage tasks and budget
-
-## Architecture
-
-- **Backend**: Java 21 Spring Boot REST API
-- **Frontend**: React 18 with TypeScript
-- **Database**: MongoDB
-- **Authentication**: JWT tokens
-- **Communication**: REST API with JSON
 
 ## Project Structure
 
