@@ -247,6 +247,13 @@ mvn spring-boot:run
 
 ### Frontend Issues
 ```bash
+# If npm install is slow or hangs
+npm cache clean --force
+npm install --legacy-peer-deps
+
+# For progress visibility
+npm install --legacy-peer-deps --verbose
+
 # Clear npm cache
 npm cache clean --force
 
