@@ -247,21 +247,29 @@ mvn spring-boot:run
 
 ### Frontend Issues
 ```bash
-# If npm install is slow or hangs
+# If npm install is slow or hangs (common with lodash packages)
 npm cache clean --force
 npm install --legacy-peer-deps
 
-# For progress visibility
+# For faster install (skips optional packages)
+npm install --legacy-peer-deps --no-optional
+
+# For progress visibility (see what's downloading)
 npm install --legacy-peer-deps --verbose
 
-# Clear npm cache
-npm cache clean --force
+# Safe to interrupt with Ctrl+C and restart
+# npm uses cache, so restarts are faster
 
-# Reinstall dependencies
+# Complete cleanup and reinstall
 cd frontend
 rm -rf node_modules package-lock.json
 npm install --legacy-peer-deps
 npm start
+
+# Alternative: Use yarn (often faster)
+npm install -g yarn
+yarn install
+yarn start
 ```
 
 ### Port Conflicts
