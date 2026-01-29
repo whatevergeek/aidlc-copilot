@@ -8,7 +8,7 @@ import RSVPDashboard from './components/rsvp/RSVPDashboard';
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, userRole, logout } = useAuth();
-  const [currentView, setCurrentView] = useState<'events' | 'create' | 'login' | 'register' | 'tasks' | 'rsvp-dashboard'>('events');
+  const [currentView, setCurrentView] = useState<'events' | 'create' | 'login' | 'register' | 'rsvp-dashboard'>('events');
 
   if (!isAuthenticated) {
     return (
@@ -60,12 +60,6 @@ const AppContent: React.FC = () => {
           {(userRole === 'COORDINATOR' || userRole === 'ORGANIZER') && (
             <>
               <button 
-                onClick={() => setCurrentView('tasks')}
-                style={{ marginRight: '10px', padding: '5px 15px', backgroundColor: 'transparent', color: 'white', border: '1px solid white' }}
-              >
-                My Tasks
-              </button>
-              <button 
                 onClick={() => setCurrentView('rsvp-dashboard')}
                 style={{ marginRight: '10px', padding: '5px 15px', backgroundColor: 'transparent', color: 'white', border: '1px solid white' }}
               >
@@ -93,7 +87,6 @@ const AppContent: React.FC = () => {
       <div style={{ padding: '20px' }}>
         {currentView === 'events' && <EventList />}
         {currentView === 'create' && userRole === 'ORGANIZER' && <EventForm onEventCreated={() => setCurrentView('events')} />}
-        {currentView === 'tasks' && (userRole === 'COORDINATOR' || userRole === 'ORGANIZER') && <div>Task Management Coming Soon</div>}
         {currentView === 'rsvp-dashboard' && (userRole === 'COORDINATOR' || userRole === 'ORGANIZER') && <RSVPDashboard />}
       </div>
     </div>
