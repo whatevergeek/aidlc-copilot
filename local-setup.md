@@ -33,8 +33,8 @@ mvn spring-boot:run
 ### 3. Start Frontend (Terminal 2)
 ```bash
 cd frontend
-npm install --legacy-peer-deps
-npm start
+npm install
+npm run dev
 ```
 ✅ Frontend runs on: `http://localhost:3000`
 
@@ -71,7 +71,7 @@ Create `.vscode/tasks.json`:
             "label": "Start Frontend",
             "type": "shell",
             "command": "npm",
-            "args": ["start"],
+            "args": ["run", "dev"],
             "options": {
                 "cwd": "${workspaceFolder}/frontend"
             },
@@ -193,11 +193,11 @@ mongod --auth --dbpath C:\data\db
 1. **Ctrl+Shift+`** (open terminal)
 2. **Ctrl+Shift+5** (split terminal)
 3. Terminal 1: `cd backend && mvn spring-boot:run`
-4. Terminal 2: `cd frontend && npm start`
+4. Terminal 2: `cd frontend && npm run dev`
 
 ### Option 3: Debug Mode
 1. **F5** to debug backend (uses launch.json)
-2. **Ctrl+Shift+`** for frontend terminal: `cd frontend && npm start`
+2. **Ctrl+Shift+`** for frontend terminal: `cd frontend && npm run dev`
 
 ## Verification Steps
 
@@ -247,29 +247,28 @@ mvn spring-boot:run
 
 ### Frontend Issues
 ```bash
-# If npm install is slow or hangs (common with lodash packages)
+# Install dependencies
+npm install
+npm run dev
+
+# If npm install is slow, try clearing cache
 npm cache clean --force
-npm install --legacy-peer-deps
+npm install
 
-# For faster install (skips optional packages)
-npm install --legacy-peer-deps --no-optional
+# Build for production
+npm run build
 
-# For progress visibility (see what's downloading)
-npm install --legacy-peer-deps --verbose
+# Run tests
+npm test
 
-# Safe to interrupt with Ctrl+C and restart
-# npm uses cache, so restarts are faster
+# Preview production build
+npm run preview
 
 # Complete cleanup and reinstall
 cd frontend
 rm -rf node_modules package-lock.json
-npm install --legacy-peer-deps
-npm start
-
-# Alternative: Use yarn (often faster)
-npm install -g yarn
-yarn install
-yarn start
+npm install
+npm run dev
 ```
 
 ### Port Conflicts

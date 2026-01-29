@@ -21,7 +21,7 @@
             "label": "Start Frontend",
             "type": "shell",
             "command": "npm",
-            "args": ["start"],
+            "args": ["run", "dev"],
             "options": {
                 "cwd": "${workspaceFolder}/frontend"
             },

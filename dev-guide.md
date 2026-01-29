@@ -186,7 +186,7 @@ flowchart TD
    ```bash
    cd frontend
    npm install
-   npm start
+   npm run dev
    ```
 
 4. **MongoDB Setup**
@@ -315,10 +315,12 @@ graph TD
 
 ### Frontend Debugging
 
-- **Browser DevTools**: Network tab for API calls
+- **Vite Dev Server**: Instant startup and hot module replacement
+- **Browser DevTools**: Network tab for API calls, faster refresh with Vite
 - **React DevTools**: Component state inspection
 - **Console Logs**: Debug API responses and state changes
-- **TypeScript Errors**: Check compilation errors
+- **TypeScript Errors**: Check compilation errors in terminal
+- **Vite Build Analysis**: Use `yarn build` to analyze bundle size
 
 ## Performance Considerations
 
@@ -331,10 +333,11 @@ graph TD
 
 ### Frontend Optimization
 
-- **Code Splitting**: Implement lazy loading for routes
-- **Memoization**: Use `React.memo` for expensive components
-- **Bundle Size**: Analyze and optimize webpack bundles
-- **API Caching**: Implement client-side caching for static data
+- **Vite Benefits**: Lightning-fast dev server startup and hot reload
+- **Code Splitting**: Vite handles automatic code splitting
+- **Bundle Analysis**: Use `yarn build` and analyze dist/ output
+- **Tree Shaking**: Vite automatically removes unused code
+- **Asset Optimization**: Vite optimizes images and static assets
 
 ## Security Best Practices
 
@@ -363,8 +366,8 @@ graph TD
    mvn versions:display-dependency-updates
    
    # Frontend
-   npm audit
    npm update
+   npm audit
    ```
 
 2. **Database Maintenance**

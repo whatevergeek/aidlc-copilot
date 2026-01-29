@@ -89,7 +89,7 @@ COPY . .
 RUN npm run build
 
 FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
@@ -574,6 +574,9 @@ curl http://localhost:8080/api-docs
 
 # Frontend health check
 curl http://localhost:3000/health
+
+# Vite build output check
+ls -la frontend/dist/
 
 # Database health check
 mongo --eval "db.adminCommand('ping')"

@@ -38,7 +38,7 @@ Backend runs on: `http://localhost:8080`
 ```bash
 cd frontend
 npm install
-npm start
+npm run dev
 ```
 Frontend runs on: `http://localhost:3000`
 
@@ -52,7 +52,7 @@ Frontend runs on: `http://localhost:3000`
 ## Architecture
 
 - **Backend**: Java 21 Spring Boot REST API
-- **Frontend**: React 18 with TypeScript
+- **Frontend**: React 18 with TypeScript and Vite
 - **Database**: MongoDB
 - **Authentication**: JWT tokens
 - **Communication**: REST API with JSON
@@ -95,7 +95,7 @@ event-planning-app/
 ## Technology Stack
 
 - **Backend**: Java 21, Spring Boot 3.2, Spring Security, Spring Data MongoDB
-- **Frontend**: React 18, TypeScript 5, Axios
+- **Frontend**: React 18, TypeScript 5, Vite 5, Vitest
 - **Database**: MongoDB
 - **Build Tools**: Maven (backend), npm (frontend)
 - **Authentication**: JWT tokens with bcrypt password hashing
