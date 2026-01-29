@@ -74,7 +74,7 @@ describe('App Integration', () => {
     
     // Check that navigation links are present for coordinator
     expect(screen.getByText(/browse events/i)).toBeInTheDocument();
-    expect(screen.getByText(/my tasks/i)).toBeInTheDocument();
+    expect(screen.getByText(/rsvp dashboard/i)).toBeInTheDocument();
     expect(screen.getByText(/logout/i)).toBeInTheDocument();
     expect(screen.getByText(/\(COORDINATOR\)/i)).toBeInTheDocument();
   });
