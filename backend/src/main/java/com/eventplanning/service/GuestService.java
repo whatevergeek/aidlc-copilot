@@ -35,6 +35,10 @@ public class GuestService {
         return guestRepository.findByEventIdAndGuestEmail(eventId, guestEmail);
     }
 
+    public Optional<RSVP> getRSVPByEventAndEmail(String eventId, String guestEmail) {
+        return guestRepository.findByEventIdAndGuestEmail(eventId, guestEmail);
+    }
+
     public RSVPSummary getRSVPSummary(String eventId) {
         long yesCount = guestRepository.countByEventIdAndResponse(eventId, RSVP.RSVPResponse.YES);
         long noCount = guestRepository.countByEventIdAndResponse(eventId, RSVP.RSVPResponse.NO);

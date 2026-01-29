@@ -17,6 +17,15 @@ export interface CreateEventRequest {
   location: string;
 }
 
+export interface RSVPDashboardItem {
+  eventId: string;
+  eventName: string;
+  eventDate: string;
+  yesCount: number;
+  noCount: number;
+  totalCount: number;
+}
+
 export const eventAPI = {
   createEvent: async (eventData: CreateEventRequest): Promise<Event> => {
     const response = await apiClient.post('/events', eventData);
@@ -35,6 +44,16 @@ export const eventAPI = {
 
   getEventByLink: async (shareableLink: string): Promise<Event> => {
     const response = await apiClient.get(`/events/share/${shareableLink}`);
+    return response.data;
+  },
+
+  getMyRSVP: async (eventId: string): Promise<{ hasRSVP: boolean; response?: string }> => {
+    const response = await apiClient.get(`/events/${eventId}/my-rsvp`);
+    return response.data;
+  },
+
+  getRSVPDashboard: async (): Promise<RSVPDashboardItem[]> => {
+    const response = await apiClient.get('/rsvp-dashboard');
     return response.data;
   },
 };

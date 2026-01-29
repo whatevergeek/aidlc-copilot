@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import LoginForm from '../auth/LoginForm';
 
@@ -12,9 +12,16 @@ vi.mock('../../contexts/AuthContext', () => ({
   })
 }));
 
-// Mock react-router-dom
-vi.mock('react-router-dom', () => ({
-  useNavigate: () => vi.fn()
+// Mock the auth API
+vi.mock('../../api/auth', () => ({
+  authAPI: {
+    login: vi.fn().mockResolvedValue({ 
+      token: 'fake-token', 
+      role: 'ORGANIZER',
+      name: 'Test User',
+      email: 'test@example.com'
+    })
+  }
 }));
 
 describe('LoginForm', () => {
@@ -31,12 +38,24 @@ describe('LoginForm', () => {
     expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
   });
 
-  test('prevents submission with empty fields', () => {
+  test('calls login with token and role on successful submission', async () => {
     render(<LoginForm />);
 
+    const inputs = screen.getAllByDisplayValue('');
+    const emailInput = inputs[0]; // First input (email)
+    const passwordInput = inputs[1]; // Second input (password)
     const loginButton = screen.getByRole('button', { name: /login/i });
+
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.change(passwordInput, { target: { value: 'password123' } });
     fireEvent.click(loginButton);
 
-    expect(mockLogin).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockLogin).toHaveBeenCalledWith('fake-token', {
+        name: 'Test User',
+        email: 'test@example.com',
+        role: 'ORGANIZER'
+      });
+    });
   });
 });

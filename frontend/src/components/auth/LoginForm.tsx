@@ -12,7 +12,11 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
     try {
       const response = await authAPI.login({ email, password });
-      login(response.token);
+      login(response.token, {
+        name: response.name,
+        email: response.email,
+        role: response.role
+      });
     } catch (err: any) {
       setError(err.response?.data?.error || 'Login failed');
     }

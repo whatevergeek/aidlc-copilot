@@ -21,8 +21,8 @@ describe('Auth API', () => {
     const { default: apiClient } = await import('../client');
     const mockResponse = {
       data: {
-        user: { id: '1', username: 'testuser', email: 'test@example.com' },
-        token: 'fake-token'
+        token: 'fake-token',
+        role: 'ORGANIZER'
       }
     };
     (apiClient.post as any).mockResolvedValue(mockResponse);
@@ -40,17 +40,20 @@ describe('Auth API', () => {
     const { default: apiClient } = await import('../client');
     const mockResponse = {
       data: {
-        user: { id: '1', username: 'testuser', email: 'test@example.com' }
+        message: 'User registered successfully',
+        userId: '1',
+        role: 'ORGANIZER'
       }
     };
     (apiClient.post as any).mockResolvedValue(mockResponse);
 
-    const result = await authAPI.register({ email: 'test@example.com', name: 'testuser', password: 'password123' });
+    const result = await authAPI.register({ email: 'test@example.com', name: 'testuser', password: 'password123', role: 'ORGANIZER' });
 
     expect(apiClient.post).toHaveBeenCalledWith('/auth/register', {
       email: 'test@example.com',
       name: 'testuser',
-      password: 'password123'
+      password: 'password123',
+      role: 'ORGANIZER'
     });
     expect(result).toEqual(mockResponse.data);
   });

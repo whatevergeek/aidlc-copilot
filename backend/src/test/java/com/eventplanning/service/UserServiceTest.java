@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,15 +37,17 @@ class UserServiceTest {
         User savedUser = new User();
         savedUser.setEmail("test@example.com");
         savedUser.setName("testuser");
+        savedUser.setRole(User.UserRole.ORGANIZER);
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         // When
-        User result = userService.registerUser("test@example.com", "testuser", "password123");
+        User result = userService.registerUser("test@example.com", "testuser", "password123", "ORGANIZER");
 
         // Then
         assertNotNull(result);
         assertEquals("testuser", result.getName());
         assertEquals("test@example.com", result.getEmail());
+        assertEquals(User.UserRole.ORGANIZER, result.getRole());
     }
 
     @Test
@@ -53,7 +57,7 @@ class UserServiceTest {
 
         // When & Then
         assertThrows(RuntimeException.class, () -> 
-            userService.registerUser("test@example.com", "testuser", "password123"));
+            userService.registerUser("test@example.com", "testuser", "password123", "ORGANIZER"));
     }
 
     @Test
@@ -143,6 +147,32 @@ class UserServiceTest {
         // Then
         assertNotNull(result);
         assertEquals("newname", result.getName());
+    }
+
+    @Test
+    void registerUser_InvalidRole_ThrowsException() {
+        // When & Then
+        assertThrows(RuntimeException.class, () -> 
+            userService.registerUser("test@example.com", "testuser", "password123", "INVALID_ROLE"));
+    }
+
+    @Test
+    void getUsersByRole_Success() {
+        // Given
+        User coordinator1 = new User();
+        coordinator1.setRole(User.UserRole.COORDINATOR);
+        User coordinator2 = new User();
+        coordinator2.setRole(User.UserRole.COORDINATOR);
+        List<User> coordinators = Arrays.asList(coordinator1, coordinator2);
+        when(userRepository.findByRole(User.UserRole.COORDINATOR)).thenReturn(coordinators);
+
+        // When
+        List<User> result = userService.getUsersByRole(User.UserRole.COORDINATOR);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(User.UserRole.COORDINATOR, result.get(0).getRole());
     }
 
     @Test

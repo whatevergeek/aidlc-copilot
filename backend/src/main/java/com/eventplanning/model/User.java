@@ -14,13 +14,19 @@ public class User {
     
     private String name;
     private String password;
+    private UserRole role;
+
+    public enum UserRole {
+        ORGANIZER, COORDINATOR, ATTENDEE
+    }
 
     public User() {}
 
-    public User(String email, String name, String password) {
+    public User(String email, String name, String password, UserRole role) {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.role = role;
     }
 
     public String getId() { return id; }
@@ -34,4 +40,7 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public UserRole getRole() { return role; }
+    public void setRole(UserRole role) { this.role = role; }
 }

@@ -31,9 +31,10 @@ public class EventPlanningController {
             User user = userService.registerUser(
                 request.get("email"),
                 request.get("name"),
-                request.get("password")
+                request.get("password"),
+                request.get("role")
             );
-            return ResponseEntity.ok(Map.of("message", "User registered successfully", "userId", user.getId()));
+            return ResponseEntity.ok(Map.of("message", "User registered successfully", "userId", user.getId(), "role", user.getRole()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -43,7 +44,14 @@ public class EventPlanningController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
         try {
             String token = userService.authenticateUser(request.get("email"), request.get("password"));
-            return ResponseEntity.ok(Map.of("token", token));
+            String userId = authenticationService.getUserIdFromToken(token);
+            Optional<User> user = userService.getUserById(userId);
+            return ResponseEntity.ok(Map.of(
+                "token", token, 
+                "role", user.get().getRole(),
+                "name", user.get().getName(),
+                "email", user.get().getEmail()
+            ));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -54,6 +62,12 @@ public class EventPlanningController {
     public ResponseEntity<?> createEvent(@RequestBody Map<String, Object> request, @RequestHeader("Authorization") String token) {
         try {
             String userId = getUserIdFromToken(token);
+            // Check if user is ORGANIZER
+            Optional<User> user = userService.getUserById(userId);
+            if (user.isEmpty() || user.get().getRole() != User.UserRole.ORGANIZER) {
+                return ResponseEntity.status(403).body(Map.of("error", "Only organizers can create events"));
+            }
+            
             Event event = eventService.createEvent(
                 (String) request.get("name"),
                 (String) request.get("description"),
@@ -71,7 +85,10 @@ public class EventPlanningController {
     public ResponseEntity<List<Event>> getEvents(@RequestHeader(value = "Authorization", required = false) String token) {
         if (token != null) {
             String userId = getUserIdFromToken(token);
-            return ResponseEntity.ok(eventService.getEventsByOrganizer(userId));
+            Optional<User> user = userService.getUserById(userId);
+            if (user.isPresent() && user.get().getRole() == User.UserRole.ORGANIZER) {
+                return ResponseEntity.ok(eventService.getEventsByOrganizer(userId));
+            }
         }
         return ResponseEntity.ok(eventService.getAllEvents());
     }
@@ -116,10 +133,89 @@ public class EventPlanningController {
         return ResponseEntity.ok(guestService.getRSVPSummary(eventId));
     }
 
+    @GetMapping("/events/{eventId}/my-rsvp")
+    public ResponseEntity<?> getMyRSVP(@PathVariable String eventId, @RequestHeader("Authorization") String token) {
+        try {
+            String userId = getUserIdFromToken(token);
+            Optional<User> user = userService.getUserById(userId);
+            if (user.isEmpty()) {
+                return ResponseEntity.status(403).body(Map.of("error", "User not found"));
+            }
+            
+            Optional<RSVP> rsvp = guestService.getRSVPByEventAndEmail(eventId, user.get().getEmail());
+            if (rsvp.isPresent()) {
+                return ResponseEntity.ok(Map.of(
+                    "hasRSVP", true,
+                    "response", rsvp.get().getResponse().toString()
+                ));
+            } else {
+                return ResponseEntity.ok(Map.of("hasRSVP", false));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/rsvp-dashboard")
+    public ResponseEntity<?> getRSVPDashboard(@RequestHeader("Authorization") String token) {
+        try {
+            System.out.println("RSVP Dashboard endpoint called");
+            String userId = getUserIdFromToken(token);
+            System.out.println("User ID: " + userId);
+            
+            Optional<User> user = userService.getUserById(userId);
+            System.out.println("User found: " + user.isPresent());
+            
+            if (user.isEmpty() || (user.get().getRole() != User.UserRole.COORDINATOR && user.get().getRole() != User.UserRole.ORGANIZER)) {
+                System.out.println("Access denied - user role: " + (user.isPresent() ? user.get().getRole() : "none"));
+                return ResponseEntity.status(403).body(Map.of("error", "Only coordinators and organizers can access RSVP dashboard"));
+            }
+            
+            System.out.println("Getting all events...");
+            List<Event> events = eventService.getAllEvents();
+            System.out.println("Events found: " + events.size());
+            
+            List<Map<String, Object>> dashboardData = events.stream().map(event -> {
+                System.out.println("Processing event: " + event.getName());
+                GuestService.RSVPSummary summary = guestService.getRSVPSummary(event.getId());
+                System.out.println("RSVP Summary - Yes: " + summary.getYesCount() + ", No: " + summary.getNoCount());
+                Map<String, Object> eventData = new java.util.HashMap<>();
+                eventData.put("eventId", event.getId());
+                eventData.put("eventName", event.getName());
+                eventData.put("eventDate", event.getDateTime().toString());
+                eventData.put("yesCount", summary.getYesCount());
+                eventData.put("noCount", summary.getNoCount());
+                eventData.put("totalCount", summary.getTotalCount());
+                return eventData;
+            }).collect(java.util.stream.Collectors.toList());
+            
+            System.out.println("Dashboard data size: " + dashboardData.size());
+            return ResponseEntity.ok(dashboardData);
+        } catch (Exception e) {
+            System.err.println("Error in RSVP Dashboard: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
     // Task Endpoints
     @PostMapping("/events/{eventId}/tasks")
-    public ResponseEntity<?> createTask(@PathVariable String eventId, @RequestBody Map<String, Object> request) {
+    public ResponseEntity<?> createTask(@PathVariable String eventId, @RequestBody Map<String, Object> request, @RequestHeader("Authorization") String token) {
         try {
+            String userId = getUserIdFromToken(token);
+            // Check if user is COORDINATOR or ORGANIZER
+            Optional<User> user = userService.getUserById(userId);
+            
+            if (user.isEmpty() || (user.get().getRole() != User.UserRole.COORDINATOR && user.get().getRole() != User.UserRole.ORGANIZER)) {
+                return ResponseEntity.status(403).body(Map.of("error", "Only coordinators and organizers can create tasks"));
+            }
+            
+            // Verify event exists
+            Optional<Event> event = eventService.getEventById(eventId);
+            if (event.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of("error", "Event not found"));
+            }
+            
             Task task = taskService.createTask(
                 eventId,
                 (String) request.get("title"),
@@ -145,10 +241,34 @@ public class EventPlanningController {
     }
 
     @PutMapping("/tasks/{taskId}/status")
-    public ResponseEntity<?> updateTaskStatus(@PathVariable String taskId, @RequestBody Map<String, String> request) {
+    public ResponseEntity<?> updateTaskStatus(@PathVariable String taskId, @RequestBody Map<String, String> request, @RequestHeader("Authorization") String token) {
         try {
-            Task task = taskService.updateTaskStatus(taskId, Task.TaskStatus.valueOf(request.get("status")));
-            return ResponseEntity.ok(task);
+            String userId = getUserIdFromToken(token);
+            Optional<Task> taskOpt = taskService.getTaskById(taskId);
+            Optional<User> user = userService.getUserById(userId);
+            
+            if (taskOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            if (user.isEmpty()) {
+                return ResponseEntity.status(403).body(Map.of("error", "User not found"));
+            }
+            
+            Task task = taskOpt.get();
+            User.UserRole userRole = user.get().getRole();
+            
+            // Allow assignee, coordinators, and organizers to update task status
+            boolean canUpdate = task.getAssigneeId().equals(userId) || 
+                               userRole == User.UserRole.COORDINATOR || 
+                               userRole == User.UserRole.ORGANIZER;
+            
+            if (!canUpdate) {
+                return ResponseEntity.status(403).body(Map.of("error", "You can only update tasks assigned to you or if you're a coordinator/organizer"));
+            }
+            
+            Task updatedTask = taskService.updateTaskStatus(taskId, Task.TaskStatus.valueOf(request.get("status")));
+            return ResponseEntity.ok(updatedTask);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -185,6 +305,27 @@ public class EventPlanningController {
     @GetMapping("/events/{eventId}/budget-summary")
     public ResponseEntity<BudgetService.BudgetSummary> getBudgetSummary(@PathVariable String eventId) {
         return ResponseEntity.ok(budgetService.getBudgetSummary(eventId));
+    }
+
+    // User Endpoints
+    @GetMapping("/users/coordinators")
+    public ResponseEntity<List<User>> getCoordinators(@RequestHeader("Authorization") String token) {
+        String userId = getUserIdFromToken(token);
+        Optional<User> user = userService.getUserById(userId);
+        if (user.isEmpty() || (user.get().getRole() != User.UserRole.COORDINATOR && user.get().getRole() != User.UserRole.ORGANIZER)) {
+            return ResponseEntity.status(403).body(null);
+        }
+        return ResponseEntity.ok(userService.getUsersByRole(User.UserRole.COORDINATOR));
+    }
+
+    @GetMapping("/users/organizers")
+    public ResponseEntity<List<User>> getOrganizers(@RequestHeader("Authorization") String token) {
+        String userId = getUserIdFromToken(token);
+        Optional<User> user = userService.getUserById(userId);
+        if (user.isEmpty() || (user.get().getRole() != User.UserRole.COORDINATOR && user.get().getRole() != User.UserRole.ORGANIZER)) {
+            return ResponseEntity.status(403).body(null);
+        }
+        return ResponseEntity.ok(userService.getUsersByRole(User.UserRole.ORGANIZER));
     }
 
     // Helper method

@@ -4,21 +4,47 @@ A complete event planning system built with Java Spring Boot backend and React T
 
 ## 📚 Documentation
 
+**User Guides (by Persona):**
+- **[Event Organizer Guide](event-organizer-guide.md)** - Create and manage community events
+- **[Event Coordinator Guide](event-coordinator-guide.md)** - Support event execution and task management  
+- **[Event Attendee Guide](event-attendee-guide.md)** - Discover and participate in events
+
+**Setup & Administration:**
 - **[Local Setup Guide](local-setup.md)** - VS Code development setup
-- **[User Guide](user-guide.md)** - How to use the application
-- **[Admin Guide](admin-guide.md)** - System administration
+- **[System Admin Guide](system-admin-guide.md)** - Database and infrastructure management
 - **[Developer Guide](dev-guide.md)** - Development and maintenance
 - **[DevOps Guide](devops-guide.md)** - Deployment and operations
 
 ## Features
 
+✅ **Role-Based Access Control** - Three user types with different permissions  
 ✅ **User Authentication** - Register and login with JWT tokens  
-✅ **Event Management** - Create, view, and share community events  
-✅ **RSVP System** - Simple Yes/No responses with guest tracking  
+✅ **Event Management** - Create, view, and share community events (Organizers)  
+✅ **RSVP System** - Simple Yes/No responses with guest tracking (All users)  
 ✅ **Guest Management** - View attendee lists and RSVP summaries  
-✅ **Task Management** - Create and assign tasks with status tracking  
+✅ **Task Management** - Create and assign tasks with status tracking (Coordinators+)  
 ✅ **Budget Tracking** - Add expenses and monitor event budgets  
-✅ **Dashboard** - Timeline view of events and key metrics  
+✅ **Dashboard** - Role-based interface with appropriate features  
+
+### User Roles
+
+**🎉 Event Attendee**
+- Browse all community events
+- RSVP to events (Yes/No responses)
+- View event details and information
+
+**🤝 Event Coordinator** 
+- All Attendee capabilities +
+- Create tasks for any event
+- Assign tasks to coordinators and organizers
+- Update task status (own tasks + any as coordinator)
+- Support event execution
+
+**📋 Event Organizer**
+- All Coordinator capabilities +
+- Create and manage events
+- Full event lifecycle management
+- Team coordination and leadership  
 
 ## Quick Start
 
@@ -44,10 +70,12 @@ Frontend runs on: `http://localhost:3000`
 
 ### 3. Use the Application
 1. Open `http://localhost:3000`
-2. Register a new account
-3. Create your first event
-4. Share the event link with guests
-5. Manage tasks and budget
+2. Register a new account and select your role:
+   - **Event Attendee**: Browse and RSVP to events
+   - **Event Coordinator**: Create tasks and support events
+   - **Event Organizer**: Create events and manage teams
+3. Explore features based on your role
+4. Create events (Organizers), manage tasks (Coordinators+), or RSVP (All users)
 
 ## Architecture
 

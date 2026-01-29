@@ -4,12 +4,11 @@ import LoginForm from './components/auth/LoginForm';
 import RegisterForm from './components/auth/RegisterForm';
 import EventList from './components/events/EventList';
 import EventForm from './components/events/EventForm';
-import RSVPForm from './components/guests/RSVPForm';
+import RSVPDashboard from './components/rsvp/RSVPDashboard';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth();
-  const [currentView, setCurrentView] = useState<'events' | 'create' | 'login' | 'register'>('events');
-  const [selectedEventId, setSelectedEventId] = useState<string>('');
+  const { isAuthenticated, userRole, logout } = useAuth();
+  const [currentView, setCurrentView] = useState<'events' | 'create' | 'login' | 'register' | 'tasks' | 'rsvp-dashboard'>('events');
 
   if (!isAuthenticated) {
     return (
@@ -50,19 +49,38 @@ const AppContent: React.FC = () => {
     <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
       <nav style={{ backgroundColor: '#007bff', padding: '1rem', color: 'white' }}>
         <h1 style={{ margin: 0, display: 'inline' }}>Event Planning App</h1>
+        <span style={{ marginLeft: '20px', fontSize: '14px' }}>({userRole})</span>
         <div style={{ float: 'right' }}>
           <button 
             onClick={() => setCurrentView('events')}
             style={{ marginRight: '10px', padding: '5px 15px', backgroundColor: 'transparent', color: 'white', border: '1px solid white' }}
           >
-            My Events
+            Browse Events
           </button>
-          <button 
-            onClick={() => setCurrentView('create')}
-            style={{ marginRight: '10px', padding: '5px 15px', backgroundColor: 'transparent', color: 'white', border: '1px solid white' }}
-          >
-            Create Event
-          </button>
+          {(userRole === 'COORDINATOR' || userRole === 'ORGANIZER') && (
+            <>
+              <button 
+                onClick={() => setCurrentView('tasks')}
+                style={{ marginRight: '10px', padding: '5px 15px', backgroundColor: 'transparent', color: 'white', border: '1px solid white' }}
+              >
+                My Tasks
+              </button>
+              <button 
+                onClick={() => setCurrentView('rsvp-dashboard')}
+                style={{ marginRight: '10px', padding: '5px 15px', backgroundColor: 'transparent', color: 'white', border: '1px solid white' }}
+              >
+                RSVP Dashboard
+              </button>
+            </>
+          )}
+          {userRole === 'ORGANIZER' && (
+            <button 
+              onClick={() => setCurrentView('create')}
+              style={{ marginRight: '10px', padding: '5px 15px', backgroundColor: 'transparent', color: 'white', border: '1px solid white' }}
+            >
+              Create Event
+            </button>
+          )}
           <button 
             onClick={logout}
             style={{ padding: '5px 15px', backgroundColor: '#dc3545', color: 'white', border: 'none' }}
@@ -74,21 +92,9 @@ const AppContent: React.FC = () => {
 
       <div style={{ padding: '20px' }}>
         {currentView === 'events' && <EventList />}
-        {currentView === 'create' && <EventForm onEventCreated={() => setCurrentView('events')} />}
-      </div>
-
-      {/* RSVP Demo Section */}
-      <div style={{ padding: '20px', borderTop: '1px solid #ddd', marginTop: '20px' }}>
-        <h3>RSVP Demo</h3>
-        <p>Enter an event ID to test RSVP functionality:</p>
-        <input
-          type="text"
-          placeholder="Event ID"
-          value={selectedEventId}
-          onChange={(e) => setSelectedEventId(e.target.value)}
-          style={{ padding: '8px', marginRight: '10px' }}
-        />
-        {selectedEventId && <RSVPForm eventId={selectedEventId} />}
+        {currentView === 'create' && userRole === 'ORGANIZER' && <EventForm onEventCreated={() => setCurrentView('events')} />}
+        {currentView === 'tasks' && (userRole === 'COORDINATOR' || userRole === 'ORGANIZER') && <div>Task Management Coming Soon</div>}
+        {currentView === 'rsvp-dashboard' && (userRole === 'COORDINATOR' || userRole === 'ORGANIZER') && <RSVPDashboard />}
       </div>
     </div>
   );

@@ -3,16 +3,16 @@ import { vi } from 'vitest';
 import App from '../App';
 
 // Mock all API calls
-vi.mock('./api/auth', () => ({
+vi.mock('../api/auth', () => ({
   authAPI: {
     login: vi.fn(),
     register: vi.fn()
   }
 }));
 
-vi.mock('./api/events', () => ({
-  eventsAPI: {
-    getAll: vi.fn().mockResolvedValue([])
+vi.mock('../api/events', () => ({
+  eventAPI: {
+    getEvents: vi.fn().mockResolvedValue([])
   }
 }));
 
@@ -41,38 +41,61 @@ describe('App Integration', () => {
   });
 
   test('renders dashboard when authenticated', () => {
-    // Mock authenticated state
+    // Mock authenticated state with user object
     localStorageMock.getItem.mockImplementation((key) => {
       if (key === 'token') return 'fake-token';
-      if (key === 'user') return JSON.stringify({ 
-        id: '1', 
-        username: 'testuser', 
-        email: 'test@example.com' 
+      if (key === 'user') return JSON.stringify({
+        name: 'Test User',
+        email: 'test@example.com',
+        role: 'ORGANIZER'
       });
       return null;
     });
 
     render(<App />);
     
-    expect(screen.getByText(/my events/i)).toBeInTheDocument();
+    expect(screen.getByText(/browse events/i)).toBeInTheDocument();
     expect(screen.getByText(/create event/i)).toBeInTheDocument();
+    expect(screen.getByText(/\(ORGANIZER\)/i)).toBeInTheDocument();
   });
 
   test('navigation works correctly', () => {
     localStorageMock.getItem.mockImplementation((key) => {
       if (key === 'token') return 'fake-token';
-      if (key === 'user') return JSON.stringify({ 
-        id: '1', 
-        username: 'testuser', 
-        email: 'test@example.com' 
+      if (key === 'user') return JSON.stringify({
+        name: 'Test User',
+        email: 'test@example.com',
+        role: 'COORDINATOR'
       });
       return null;
     });
 
     render(<App />);
     
-    // Check that navigation links are present
-    expect(screen.getByText(/my events/i)).toBeInTheDocument();
+    // Check that navigation links are present for coordinator
+    expect(screen.getByText(/browse events/i)).toBeInTheDocument();
+    expect(screen.getByText(/my tasks/i)).toBeInTheDocument();
     expect(screen.getByText(/logout/i)).toBeInTheDocument();
+    expect(screen.getByText(/\(COORDINATOR\)/i)).toBeInTheDocument();
+  });
+
+  test('attendee role shows correct navigation', () => {
+    localStorageMock.getItem.mockImplementation((key) => {
+      if (key === 'token') return 'fake-token';
+      if (key === 'user') return JSON.stringify({
+        name: 'Test User',
+        email: 'test@example.com',
+        role: 'ATTENDEE'
+      });
+      return null;
+    });
+
+    render(<App />);
+    
+    // Attendee should only see browse events (RSVP section removed)
+    expect(screen.getByText(/browse events/i)).toBeInTheDocument();
+    expect(screen.getByText(/\(ATTENDEE\)/i)).toBeInTheDocument();
+    expect(screen.queryByText(/create event/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/my tasks/i)).not.toBeInTheDocument();
   });
 });
